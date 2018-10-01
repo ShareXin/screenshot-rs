@@ -1,0 +1,6 @@
+[package]
+name = "screenshot-rs"
+version = "0.1.0"
+authors = ["thebitstick <thebitstick@tfwno.gf>"]
+
+[dependencies]
