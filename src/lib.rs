@@ -81,7 +81,7 @@ fn gnome(option: ScreenshotKind, file: String) {
         ScreenshotKind::Area => {
             Command::new("gnome-screenshot")
                 .args(&["-f,", &SELECTION_TEMPORARY_FILE])
-                .status()
+                .output()
                 .expect("gnome-screenshot did not launch");
             let mut feh = Command::new("feh")
                 .args(&[&SELECTION_TEMPORARY_FILE, "-F"])
@@ -89,7 +89,7 @@ fn gnome(option: ScreenshotKind, file: String) {
                 .expect("'feh' did not launch to pause screen for selection");
             Command::new("gnome-screenshot")
                 .args(&["-a", "-f", &file])
-                .status()
+                .output()
                 .expect("gnome-screenshot did not launch");
             fs::remove_file(SELECTION_TEMPORARY_FILE)
                 .expect("Unable to remove temporary selection file");
@@ -101,13 +101,13 @@ fn gnome(option: ScreenshotKind, file: String) {
         ScreenshotKind::Window => {
             Command::new("gnome-screenshot")
                 .args(&["-w", "-e", "shadow", "-f", &file])
-                .status()
+                .output()
                 .expect("gnome-screenshot did not launch");
         }
         ScreenshotKind::Full => {
             Command::new("gnome-screenshot")
                 .args(&["-f", &file])
-                .status()
+                .output()
                 .expect("gnome-screenshot did not launch");
         }
     };
@@ -117,19 +117,19 @@ fn kde(option: ScreenshotKind, file: String) {
         ScreenshotKind::Area => {
             Command::new("spectacle")
                 .args(&["-rbno,", &file])
-                .status()
+                .output()
                 .expect("spectacle did not launch");
         }
         ScreenshotKind::Window => {
             Command::new("spectacle")
                 .args(&["-abno", &file])
-                .status()
+                .output()
                 .expect("spectacle did not launch");
         }
         ScreenshotKind::Full => {
             Command::new("spectacle")
                 .args(&["-fbno", &file])
-                .status()
+                .output()
                 .expect("spectacle did not launch");
         }
     };
@@ -139,7 +139,7 @@ fn scrot(option: ScreenshotKind, file: String) {
         ScreenshotKind::Area => {
             Command::new("scrot")
                 .args(&[&SELECTION_TEMPORARY_FILE])
-                .status()
+                .output()
                 .expect("scrot did not launch");
             let mut feh = Command::new("feh")
                 .args(&[&SELECTION_TEMPORARY_FILE, "-F"])
@@ -147,7 +147,7 @@ fn scrot(option: ScreenshotKind, file: String) {
                 .expect("'feh' did not launch to pause screen for selection");
             Command::new("scrot")
                 .args(&["--select", &file])
-                .status()
+                .output()
                 .expect("scrot did not launch");
             fs::remove_file(SELECTION_TEMPORARY_FILE)
                 .expect("Unable to remove temporary selection file");
@@ -159,13 +159,13 @@ fn scrot(option: ScreenshotKind, file: String) {
         ScreenshotKind::Window => {
             Command::new("scrot")
                 .args(&["--border", "--focused", &file])
-                .status()
+                .output()
                 .expect("gnome-screenshot did not launch");
         }
         ScreenshotKind::Full => {
             Command::new("scrot")
                 .args(&[&file])
-                .status()
+                .output()
                 .expect("gnome-screenshot did not launch");
         }
     };
