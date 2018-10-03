@@ -4,7 +4,7 @@ use std::env;
 use std::fs;
 use std::process::Command;
 
-static SELECTION_TEMPORARY_FILE: &str = "/tmp/selection_tmp.png";
+static SELECTION_TEMPORARY_FILE: &str = "/tmp/selection-tmp.png";
 
 enum ScreenshotKind {
     Area,
@@ -80,11 +80,11 @@ fn gnome(option: ScreenshotKind, file: String) {
     match option {
         ScreenshotKind::Area => {
             Command::new("gnome-screenshot")
-                .args(&["-f,", &SELECTION_TEMPORARY_FILE])
+                .args(&["-f", SELECTION_TEMPORARY_FILE])
                 .output()
                 .expect("gnome-screenshot did not launch");
             let mut feh = Command::new("feh")
-                .args(&[&SELECTION_TEMPORARY_FILE, "-F"])
+                .args(&[SELECTION_TEMPORARY_FILE, "-F"])
                 .spawn()
                 .expect("'feh' did not launch to pause screen for selection");
             Command::new("gnome-screenshot")
@@ -138,11 +138,11 @@ fn scrot(option: ScreenshotKind, file: String) {
     match option {
         ScreenshotKind::Area => {
             Command::new("scrot")
-                .args(&[&SELECTION_TEMPORARY_FILE])
+                .arg(SELECTION_TEMPORARY_FILE)
                 .output()
                 .expect("scrot did not launch");
             let mut feh = Command::new("feh")
-                .args(&[&SELECTION_TEMPORARY_FILE, "-F"])
+                .args(&[SELECTION_TEMPORARY_FILE, "-F"])
                 .spawn()
                 .expect("'feh' did not launch to pause screen for selection");
             Command::new("scrot")
