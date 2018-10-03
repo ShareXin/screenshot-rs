@@ -6,7 +6,7 @@ use std::process::Command;
 
 static SELECTION_TEMPORARY_FILE: &str = "/tmp/selection-tmp.png";
 
-enum ScreenshotKind {
+pub enum ScreenshotKind {
     Area,
     Window,
     Full,
