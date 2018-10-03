@@ -28,5 +28,8 @@ Checks '$XDG_SESSION_TYPE' for either Wayland or X11, and checks for installed s
 - Takes a screenshot of an entire screen(s)
 
 ## Changelog
+### [0.1.1] - 2018-10-03
+- Made enum ScreenshotKind public
+
 ### [0.1.0] - 2018-10-01
 - First version (created for [ShareXin](https://github.com/ShareXin/ShareXin))
