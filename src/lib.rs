@@ -95,7 +95,7 @@ fn gnome(option: ScreenshotKind, file: String) {
                 .expect("Unable to remove temporary selection file");
             match feh.kill() {
                 Ok(ok) => ok,
-                Err(_) => println!("Unable to kill feh, must have already been closed")
+                Err(_) => println!("Unable to kill feh, must have already been closed"),
             };
         }
         ScreenshotKind::Window => {
@@ -153,7 +153,7 @@ fn scrot(option: ScreenshotKind, file: String) {
                 .expect("Unable to remove temporary selection file");
             match feh.kill() {
                 Ok(ok) => ok,
-                Err(_) => println!("Unable to kill feh, must have already been closed")
+                Err(_) => println!("Unable to kill feh, must have already been closed"),
             };
         }
         ScreenshotKind::Window => {
