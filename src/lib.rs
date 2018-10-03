@@ -4,7 +4,7 @@ use std::env;
 use std::fs;
 use std::process::Command;
 
-static SELECTION_TEMPORARY_FILE: &str = "/tmp/selection_tmp";
+static SELECTION_TEMPORARY_FILE: &str = "/tmp/selection_tmp.png";
 
 enum ScreenshotKind {
     Area,
