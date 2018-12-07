@@ -55,48 +55,61 @@ fn screenshot_tool_selection(session: SessionKind) -> DesktopKind {
     };
 }
 
-pub fn screenshot_area(file: String) {
+pub fn screenshot_area(file: String, freeze: bool) {
     match screenshot_tool_selection(session_type()) {
-        DesktopKind::GNOME => gnome(ScreenshotKind::Area, file),
+        DesktopKind::GNOME => gnome(ScreenshotKind::Area, file, freeze),
         DesktopKind::KDE => kde(ScreenshotKind::Area, file),
-        DesktopKind::X11 => scrot(ScreenshotKind::Area, file),
+        DesktopKind::X11 => scrot(ScreenshotKind::Area, file, freeze),
     }
 }
 pub fn screenshot_window(file: String) {
     match screenshot_tool_selection(session_type()) {
-        DesktopKind::GNOME => gnome(ScreenshotKind::Window, file),
+        DesktopKind::GNOME => gnome(ScreenshotKind::Window, file, false),
         DesktopKind::KDE => kde(ScreenshotKind::Window, file),
-        DesktopKind::X11 => scrot(ScreenshotKind::Window, file),
+        DesktopKind::X11 => scrot(ScreenshotKind::Window, file, false),
     }
 }
 pub fn screenshot_full(file: String) {
     match screenshot_tool_selection(session_type()) {
-        DesktopKind::GNOME => gnome(ScreenshotKind::Full, file),
+        DesktopKind::GNOME => gnome(ScreenshotKind::Full, file, false),
         DesktopKind::KDE => kde(ScreenshotKind::Full, file),
-        DesktopKind::X11 => scrot(ScreenshotKind::Full, file),
+        DesktopKind::X11 => scrot(ScreenshotKind::Full, file, false),
     }
 }
-fn gnome(option: ScreenshotKind, file: String) {
+fn gnome(option: ScreenshotKind, file: String, freeze: bool) {
     match option {
         ScreenshotKind::Area => {
-            Command::new("gnome-screenshot")
-                .args(&["-f", SELECTION_TEMPORARY_FILE])
-                .output()
-                .expect("gnome-screenshot did not launch");
-            let mut feh = Command::new("feh")
-                .args(&[SELECTION_TEMPORARY_FILE, "-F"])
-                .spawn()
-                .expect("'feh' did not launch to pause screen for selection");
+            let mut feh = match Command::new("feh").arg("--version").spawn() {
+                Ok(_) => {
+                    Command::new("gnome-screenshot")
+                        .args(&["-f", SELECTION_TEMPORARY_FILE])
+                        .output()
+                        .expect("gnome-screenshot did not launch");
+                    Command::new("feh")
+                        .args(&[SELECTION_TEMPORARY_FILE, "-F"])
+                        .spawn()
+                        .expect("'feh' did not launch to pause screen for selection")
+                }
+                Err(_) => Command::new("sh")
+                    .arg("-c")
+                    .arg("echo Feh does not exist")
+                    .spawn()
+                    .unwrap(),
+            };
             Command::new("gnome-screenshot")
                 .args(&["-a", "-f", &file])
                 .output()
                 .expect("gnome-screenshot did not launch");
-            fs::remove_file(SELECTION_TEMPORARY_FILE)
-                .expect("Unable to remove temporary selection file");
-            match feh.kill() {
-                Ok(ok) => ok,
-                Err(_) => println!("Unable to kill feh, must have already been closed"),
-            };
+            if freeze {
+                match fs::remove_file(SELECTION_TEMPORARY_FILE) {
+                    Ok(ok) => ok,
+                    Err(_) => eprintln!("Unable to remove temporary selection file"),
+                };
+                match feh.kill() {
+                    Ok(ok) => ok,
+                    Err(_) => eprintln!("Unable to kill feh, must have already been closed"),
+                };
+            }
         }
         ScreenshotKind::Window => {
             Command::new("gnome-screenshot")
@@ -134,27 +147,40 @@ fn kde(option: ScreenshotKind, file: String) {
         }
     };
 }
-fn scrot(option: ScreenshotKind, file: String) {
+fn scrot(option: ScreenshotKind, file: String, freeze: bool) {
     match option {
         ScreenshotKind::Area => {
-            Command::new("scrot")
-                .arg(SELECTION_TEMPORARY_FILE)
-                .output()
-                .expect("scrot did not launch");
-            let mut feh = Command::new("feh")
-                .args(&[SELECTION_TEMPORARY_FILE, "-F"])
-                .spawn()
-                .expect("'feh' did not launch to pause screen for selection");
+            let mut feh = match Command::new("feh").arg("--version").spawn() {
+                Ok(_) => {
+                    Command::new("scrot")
+                        .arg(SELECTION_TEMPORARY_FILE)
+                        .output()
+                        .expect("scrot did not launch");
+                    Command::new("feh")
+                        .args(&[SELECTION_TEMPORARY_FILE, "-F"])
+                        .spawn()
+                        .expect("'feh' did not launch to pause screen for selection")
+                }
+                Err(_) => Command::new("sh")
+                    .arg("-c")
+                    .arg("echo Feh does not exist")
+                    .spawn()
+                    .unwrap(),
+            };
             Command::new("scrot")
                 .args(&["--select", &file])
                 .output()
                 .expect("scrot did not launch");
-            fs::remove_file(SELECTION_TEMPORARY_FILE)
-                .expect("Unable to remove temporary selection file");
-            match feh.kill() {
-                Ok(ok) => ok,
-                Err(_) => println!("Unable to kill feh, must have already been closed"),
-            };
+            if freeze {
+                match fs::remove_file(SELECTION_TEMPORARY_FILE) {
+                    Ok(ok) => ok,
+                    Err(_) => eprintln!("Unable to remove temporary selection file"),
+                };
+                match feh.kill() {
+                    Ok(ok) => ok,
+                    Err(_) => eprintln!("Unable to kill feh, must have already been closed"),
+                };
+            }
         }
         ScreenshotKind::Window => {
             Command::new("scrot")

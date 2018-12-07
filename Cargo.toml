@@ -1,10 +1,11 @@
 [package]
 name = "screenshot-rs"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["thebitstick <thebitstick@tfwno.gf>"]
 description = "Simple library that allows for simple method of asking for screenshots from various Linux/BSD desktops"
 homepage = "https://sharexin.github.io"
 repository = "https://github.com/ShareXin/screenshot-rs"
 keywords = ["gnome", "kde", "plasma", "screenshot", "linux"]
 license = "MIT"
+edition = "2018"
 readme = "README.md"
