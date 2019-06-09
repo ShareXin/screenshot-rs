@@ -129,7 +129,7 @@ fn kde(option: ScreenshotKind, file: String) {
     match option {
         ScreenshotKind::Area => {
             Command::new("spectacle")
-                .args(&["-rbno,", &file])
+                .args(&["-rbno", &file])
                 .output()
                 .expect("spectacle did not launch");
         }
