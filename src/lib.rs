@@ -15,12 +15,14 @@ pub enum ScreenshotKind {
 enum SessionKind {
     Wayland,
     X11,
+    Macos
 }
 
 enum DesktopKind {
     GNOME,
     KDE,
     X11,
+    Macos
 }
 
 fn session_type() -> SessionKind {
@@ -29,7 +31,13 @@ fn session_type() -> SessionKind {
             "wayland" => SessionKind::Wayland,
             _ => SessionKind::X11,
         },
-        Err(_) => SessionKind::X11,
+        Err(_) => {
+            if !cfg!(target_os = "macos") {
+                SessionKind::Macos
+            } else {
+                SessionKind::X11
+            }
+        },
     };
 }
 
@@ -52,6 +60,7 @@ fn screenshot_tool_selection(session: SessionKind) -> DesktopKind {
                 },
             },
         },
+        SessionKind::Macos => DesktopKind::Macos,
     };
 }
 
@@ -60,6 +69,7 @@ pub fn screenshot_area(file: String, freeze: bool) {
         DesktopKind::GNOME => gnome(ScreenshotKind::Area, file, freeze),
         DesktopKind::KDE => kde(ScreenshotKind::Area, file),
         DesktopKind::X11 => scrot(ScreenshotKind::Area, file, freeze),
+        DesktopKind::Macos => mac(ScreenshotKind::Area, file)
     }
 }
 pub fn screenshot_window(file: String) {
@@ -67,6 +77,7 @@ pub fn screenshot_window(file: String) {
         DesktopKind::GNOME => gnome(ScreenshotKind::Window, file, false),
         DesktopKind::KDE => kde(ScreenshotKind::Window, file),
         DesktopKind::X11 => scrot(ScreenshotKind::Window, file, false),
+        DesktopKind::Macos => mac(ScreenshotKind::Area, file)
     }
 }
 pub fn screenshot_full(file: String) {
@@ -74,6 +85,7 @@ pub fn screenshot_full(file: String) {
         DesktopKind::GNOME => gnome(ScreenshotKind::Full, file, false),
         DesktopKind::KDE => kde(ScreenshotKind::Full, file),
         DesktopKind::X11 => scrot(ScreenshotKind::Full, file, false),
+        DesktopKind::Macos => mac(ScreenshotKind::Area, file)
     }
 }
 fn gnome(option: ScreenshotKind, file: String, freeze: bool) {
@@ -144,6 +156,28 @@ fn kde(option: ScreenshotKind, file: String) {
                 .args(&["-fbno", &file])
                 .output()
                 .expect("spectacle did not launch");
+        }
+    };
+}
+fn mac(option: ScreenshotKind, file: String) {
+    match option {
+        ScreenshotKind::Area => {
+            Command::new("screencapture")
+                .args(&["-s", &file])
+                .output()
+                .expect("screencapture did not launch");
+        }
+        ScreenshotKind::Window => {
+            Command::new("screencapture")
+                .args(&["-w", &file])
+                .output()
+                .expect("screencapture did not launch");
+        }
+        ScreenshotKind::Full => {
+            Command::new("screencapture")
+                .args(&["-S", &file])
+                .output()
+                .expect("screencapture did not launch");
         }
     };
 }
