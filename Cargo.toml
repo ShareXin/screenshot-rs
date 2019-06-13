@@ -1,6 +1,6 @@
 [package]
 name = "screenshot-rs"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["thebitstick <thebitstick@tfwno.gf>"]
 description = "Simple library that allows for simple method of asking for screenshots from various Linux/BSD desktops"
 homepage = "https://sharexin.github.io"

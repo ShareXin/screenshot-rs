@@ -4,13 +4,14 @@ Simple library that allows for simple method of asking for screenshots from vari
 
 ## Features
 - Works with some Wayland desktops
-  - GNOME
   - Plasma
+  - GNOME
+  - Sway
 - Works with all X11 desktops (with *scrot* installed as fallback)
 
 ## Screenshot tools required (at least one)
-- gnome-screenshot (works with GNOME, Unity, Budgie, Cinnamon, etc)
 - spectacle (works with KDE Plasma, possibly LXQT)
+- gnome-screenshot (works with GNOME, Unity, Budgie, Cinnamon, etc)
 - scrot (works with anything with an X server, except WSL or Bash for Ubuntu for Windows)
 
 ### Freezing screen for area screenshots
@@ -32,6 +33,15 @@ Checks '$XDG_SESSION_TYPE' for either Wayland or X11, and checks for available s
 - Takes a screenshot of an entire screen(s)
 
 ## Changelog
+### [0.1.5] - 2019-06-13
+- Experimental Sway support
+
+### [0.1.4] - 2019-06-09
+- Experimental macOS Support
+
+### [0.1.3] - 2019-06-09
+- A typo
+
 ### [0.1.2] - 2018-12-07
 - *feh* is no longer a requirement for "area" screenshots, was used to "freeze" the screen
 
